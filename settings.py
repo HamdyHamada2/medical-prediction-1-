@@ -671,15 +671,25 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1", "f04d-197-60-250-17.ngrok-free.app"]
 CORS_ALLOW_ALL_ORIGINS = True  # إذا كنت تريد السماح بكل النطاقات
 
 # Django REST Framework
+# settings.py
+
 REST_FRAMEWORK = {
+    # إعدادات التصفح (Pagination)
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,  # الحد الأقصى لعدد العناصر في كل صفحة
+
+    # إعدادات المصادقة (Authentication)
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
+
+    # إعدادات التصاريح (Permissions)
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
     ],
 }
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),  # التوكن يكون صالحًا لمدة ساعة
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),  # التوكن المعاد هو 7 أيام
