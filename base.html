@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Prediction</title>
+    <!-- إضافة استايلاتك هنا، إذا كنت تستخدم CSS أو Tailwind -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <!-- القائمة أو الشريط العلوي، إذا كان موجوداً -->
+    <header>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/diagnosis/">Predict Diagnosis</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- المحتوى الرئيسي هنا سيختلف حسب الصفحة -->
+    {% block content %}
+    {% endblock %}
+
+    <!-- إضافة السكربتات -->
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>

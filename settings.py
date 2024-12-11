@@ -619,49 +619,16 @@
 
 import os
 from pathlib import Path
-from dotenv import load_dotenv
-import logging
-from datetime import timedelta
 
-# تحميل المتغيرات من ملف .env
-load_dotenv ()
+# **المسار الأساسي للمشروع**
+BASE_DIR = Path(__file__).resolve().parent.parent
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-# تحديد إعدادات Django
-os.environ.setdefault ("DJANGO_SETTINGS_MODULE", "Baymax.settings")
-logging.basicConfig (filename='logs/debug.log', level=logging.DEBUG)
-logging.debug ('This is a debug message.')
-# المسار الأساسي للمشروع
-# BASE_DIR = Path(__file__).resolve().parent.parent
-BASE_DIR = Path (__file__).resolve ().parent.parent
-TEMPLATES_DIR = str (BASE_DIR / "templates")  # تحويل Path إلى نص عند الحاجة
+# **Secret Key**
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "default-secret-key")
 
-LOG_DIR = os.path.join (BASE_DIR, 'logs')
-os.makedirs (LOG_DIR, exist_ok=True)  # تأكد من وجود المجلد
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1']
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
-
-logging.basicConfig (
-    filename=os.path.join (LOG_DIR, 'debug.log'),
-    level=logging.DEBUG,
-    format='%(asctime)s - %(levelname)s - %(message)s'
-)
-
-logging.debug ('Logging setup complete.')
-# تعريف المسار الجذري للمسارات
-ROOT_URLCONF = "Baymax.urls"
-
-# تحميل المتغيرات من ملف .env
-AIRTABLE_API_KEY = os.getenv ("AIRTABLE_API_KEY")
-BASE_ID = os.getenv ("BASE_ID")
-TABLE_NAME = os.getenv ("TABLE_NAME")
-
-# Secret Key
-SECRET_KEY = os.getenv ("DJANGO_SECRET_KEY", "default-secret-key")
-
-# Debug and Allowed Hosts
+# **Debug and Allowed Hosts**
 DEBUG = True
+
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # التطبيق الأمامي المحلي
     "https://yourdomain.com",  # إذا كنت تستخدم دومين خارجي
@@ -670,61 +637,17 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1", "f04d-197-60-250-17.ngrok-free.app"]
 
 CORS_ALLOW_ALL_ORIGINS = True  # إذا كنت تريد السماح بكل النطاقات
 
-# Django REST Framework
-# settings.py
-
 REST_FRAMEWORK = {
-    # إعدادات التصفح (Pagination)
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10,  # الحد الأقصى لعدد العناصر في كل صفحة
-
-    # إعدادات المصادقة (Authentication)
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ],
-
-    # إعدادات التصاريح (Permissions)
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",  # أو JWT إذا كنت تستخدمه
     ],
 }
 
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),  # التوكن يكون صالحًا لمدة ساعة
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),  # التوكن المعاد هو 7 أيام
-    'ROTATE_REFRESH_TOKENS': False,
-    'BLACKLIST_AFTER_ROTATION': True,
-    'ALGORITHM': 'HS256',
-    'SIGNING_KEY': SECRET_KEY,
-    'VERIFYING_KEY': None,
-    'AUDIENCE': None,
-    'ISSUER': None,
-}
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'handlers': {
-#         'file': {
-#             'level': 'DEBUG',
-#             'class': 'logging.FileHandler',
-#             'filename': 'django_debug.log',  # المسار الكامل إذا لزم الأمر
-#         },
-#     },
-#     'loggers': {
-#         'django': {
-#             'handlers': ['file'],
-#             'level': 'DEBUG',
-#             'propagate': True,
-#         },
-#     },
-# }
-
-# إعدادات الأمان للكوكيز
+# **أمان الكوكيز**
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
-# الإعدادات الخاصة بالتطبيقات المثبتة في Django
+# **App Configuration**
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -734,34 +657,49 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",
     "rest_framework",  # Django REST framework
-    'rest_framework_simplejwt',
     "rest_framework.authtoken",
-    'corsheaders',  # تأكد من كتابة هذا بالشكل الصحيح
+    "corsheaders",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
     "health",  # التطبيق الخاص بك
     "social_django",
-    "import_export",
-    'django_extensions',
-    'debug_toolbar',
 ]
-INTERNAL_IPS = ['127.0.0.1']
 
-# CORS_ORIGIN_ALLOW_ALL = True  # يسمح بجميع الطلبات
-CORS_ORIGIN_ALLOW_ALL = [
-    'https://medical-prediction.vercel.app',  # عنوان الواجهة الأمامية
+# **Middleware**
+MIDDLEWARE = [
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
 ]
+
+# **Caching**
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",  # تأكد من أن لديك Redis مثبتاً
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    }
+}
+
+# **URLs and Template settings**
+ROOT_URLCONF = "Baymax.urls"
 
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
-            BASE_DIR / "templates"
-
-        ],  # يمكنك تخصيص هذا المسار لمجلد القوالب الخاص بك
-        "APP_DIRS": True,
+            os.path.join(BASE_DIR, "templates"),  # مسار مجلد القوالب العام
+        ],
+        "APP_DIRS": True,  # تأكد من أن هذا مضبوط على True لتمكين البحث في مجلدات التطبيقات
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
@@ -773,21 +711,10 @@ TEMPLATES = [
     },
 ]
 
-# إعدادات الـ Middleware
-MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',  # يجب أن تكون في الأعلى
-    "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "allauth.account.middleware.AccountMiddleware",
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
-]
+# **Wsgi Settings**
+WSGI_APPLICATION = "Baymax.wsgi.application"
 
-# إعدادات قاعدة البيانات
+# **Database Settings**
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
@@ -798,11 +725,8 @@ DATABASES = {
         "PORT": "5432",
     }
 }
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-]
 
-# إعدادات كلمات المرور
+# **Password Validation**
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -818,59 +742,46 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-DEBUG_TOOLBAR_CONFIG = {
-    'SHOW_TOOLBAR_CALLBACK': lambda request: True,  # للتأكد من ظهورها فقط في الصفحات التي تحتاج إليها
-    'DISABLE_PANELS': ['debug_toolbar.panels.sql.SQLPanel'],  # تعطيل اللوحة التي تعرض استعلامات SQL إذا لم تكن بحاجة إليها
-}
-
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': 'django_debug.log',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-    },
-}
-
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# إعدادات اللغة والتوقيت
+# **Internationalization & Localization**
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-# إعدادات الملفات الثابتة والوسائط
+# **Static and Media Files**
 STATIC_URL = "static/"
 
-UPLOAD_FOLDER = os.path.join (BASE_DIR, "uploads")
+UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads")
 
+# **مسار ملفات الميديا (الملفات المرفوعة)**
 MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join (BASE_DIR, "uploads")
+MEDIA_ROOT = os.path.join(BASE_DIR, "uploads")
 
-# إعدادات تسجيل الدخول الاجتماعي (Google & Facebook)
+# **Authentication Settings for Social Login**
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
+
+# **Allauth Settings**
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = True
+
+# **Social Auth Google & Facebook Settings**
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = "your-google-client-id"
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = "your-google-client-secret"
 SOCIAL_AUTH_FACEBOOK_KEY = "your-facebook-app-id"
 SOCIAL_AUTH_FACEBOOK_SECRET = "your-facebook-app-secret"
 
-# إعدادات Celery و Redis
+# **Celery and Redis Settings**
 CELERY_BROKER_URL = "redis://localhost:6379/0"
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
-CELERY_TIMEZONE = "Africa/Cairo"  # إذا كنت تريد استخدام توقيت القاهرة
+
 
 # import os
 # from pathlib import Path

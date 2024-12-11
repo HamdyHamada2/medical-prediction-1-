@@ -1,0 +1,10 @@
+{% extends 'health/base.html' %}
+
+{% block content %}
+    <h1>Enter Symptoms for Diagnosis</h1>
+
+    <input type="text" id="symptomsInput" placeholder="Enter your symptoms (comma separated)">
+    <button onclick="submitSymptoms()">Get Diagnosis</button>
+
+    <p id="diagnosisResult"></p>
+{% endblock %}
